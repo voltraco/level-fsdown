@@ -112,6 +112,20 @@ test('del (deep directory)', assert => {
   })
 })
 
+test('del (deep directory)', assert => {
+
+  let key = ['foo', 'bar', 'bazz', 'quxx'].join('/')
+  db.put(key, {}, (err) => {
+    assert.ok(!err)
+    db.get(key, (err, _) => {
+      assert.ok(!err)
+      db.del(key, (err) => {
+        assert.end()
+      })
+    })
+  })
+})
+
 test('batch', assert => {
 
   let key1 = ['foo']
@@ -128,7 +142,6 @@ test('batch', assert => {
 
     db.get(key1, (err, actual) => {
       assert.ok(!err)
-      console.log(err, actual)
       assert.deepEqual(actual, val1)
 
       db.get(key2, (err, actual) => {
