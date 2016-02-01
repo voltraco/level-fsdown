@@ -18,7 +18,7 @@ db.put(['foo', 'bar'], { hello: 'world' }, (err) => {
   if (err) throw err
 
   // a file containing the json `{ hello: 'world' }` was
-  // written to the location `__dirname/foo/bar.json`.
+  // written to the location `<__dirname>/foo/bar.json`.
 
   db.get(['foo', 'bar'], (err, value) => {
     if (err) throw err
@@ -27,8 +27,9 @@ db.put(['foo', 'bar'], { hello: 'world' }, (err) => {
 })
 ```
 
-Arrays as keys are joined with the appropriate `path.sep` and then
-prefied with the `location` specified by the constructor.
+When keys are provided as arrays, they are joined with the appropriate
+`path.sep` and then prefixed with the `location` as specified by the
+constructor.
 
 [0]:https://github.com/level/levelup
 [1]:https://github.com/level/leveldown
