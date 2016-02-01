@@ -1,6 +1,6 @@
 # SYNOPSIS
-A [`levelup`][0] compatible abstraction for node's [`fs`][1] module to use
-the file system as a backing store.
+A [`levelup`][0] compatible [`abstraction`][1] for node's [`fs`][2]
+module to use the file system as a backing store.
 
 # USAGE
 ```js
@@ -26,4 +26,8 @@ db.put(['foo', 'bar'], { hello: 'world' }, function (err) {
   })
 })
 ```
+
+[0]:https://github.com/level/levelup
+[1]:https://github.com/level/leveldown
+[2]:https://nodejs.org/api/fs.html
 
