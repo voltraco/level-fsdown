@@ -2,6 +2,10 @@
 A [`levelup`][0] compatible [`abstraction`][1] for node's [`fs`][2]
 module to use the file system as a backing store.
 
+# BUILDS/TESTS
+
+[![Build Status](https://travis-ci.org/voltraco/level-fsdown.png)](https://travis-ci.org/voltraco/level-fsdown)
+
 # USAGE
 ```js
 const Fsdown = require('level-fsdown')
