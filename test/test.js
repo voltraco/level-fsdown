@@ -162,7 +162,7 @@ test('batch', assert => {
   })
 })
 
-test('createReadStream', assert => {
+test('createReadStream (no options)', assert => {
 
   let key1 = ['a']
   let key2 = ['b']
@@ -196,7 +196,43 @@ test('createReadStream', assert => {
       assert.equal(readcount, 8)
       assert.end()
     })
+  })
+})
 
+
+test('createReadStream (options)', assert => {
+
+  let key1 = ['a']
+  let key2 = ['b']
+  let key3 = ['c']
+  let key4 = ['d']
+  let key5 = ['e']
+  let key6 = ['f']
+  let key7 = ['g']
+  let key8 = ['h']
+
+  db.batch([
+    { type: 'put', key: key1, value: { num: 1 } },
+    { type: 'put', key: key2, value: { num: 2 } },
+    { type: 'put', key: key3, value: { num: 3 } },
+    { type: 'put', key: key4, value: { num: 4 } },
+    { type: 'put', key: key5, value: { num: 5 } },
+    { type: 'put', key: key6, value: { num: 6 } },
+    { type: 'put', key: key7, value: { num: 7 } },
+    { type: 'put', key: key8, value: { num: 8 } }
+  ], (err) => {
+    assert.ok(!err)
+
+    let readcount = 0
+    let s = db.createReadStream({ gte: 'c', lte: 'f' })
+
+    s.on('data', (data) => {
+      ++readcount
+    })
+    s.on('end', () => {
+      assert.equal(readcount, 4)
+      assert.end()
+    })
   })
 })
 

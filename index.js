@@ -5,6 +5,7 @@ const path = require('path')
 
 const mkdirp = require('mkdirp')
 const AL = require('abstract-leveldown')
+const ltgt = require('ltgt')
 const AbstractLevelDown = AL.AbstractLevelDOWN
 const AbstractIterator = AL.AbstractIterator
 
@@ -141,6 +142,12 @@ function Iterator (db, options) {
   this._list = fs.readdirSync(db.location)
     .map((v) => path.join(db.location, v))
 
+  let enc = options.valueEncoding
+  ;['lt', 'lte', 'gt', 'gte'].map((v) => {
+    var opt = options[v]
+    if (opt) options[v] = path.basename(opt, '.' + enc)
+  })
+
   this._reverse = options.reverse
   this._options = options
   this._done = 0
@@ -150,12 +157,15 @@ util.inherits(Iterator, AbstractIterator)
 
 Iterator.prototype._next = function Next (cb) {
   let key = this._list[this._reverse ? 'pop' : 'shift']()
-  var k = path.basename(key, '.' + this._options.valueEncoding)
+  if (!key) return cb(null)
+
+  let enc = this._options.valueEncoding
+  var k = path.basename(key, '.' + enc)
 
   if (this._done++ >= this._limit)
     return setImmediate(cb)
 
-  if (!key) return cb(null)
+  if (!ltgt.contains(this._options, k)) this._next(cb)
 
   fs.readFile(key, (err, val) => {
     if (err) return cb(err)
