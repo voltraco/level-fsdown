@@ -121,6 +121,7 @@ Fsdown.prototype._batch = function Batch (arr, options, cb) {
 
   let loop = (op, arr) => {
     if (!op) return cb(null)
+
     let next = (err) => {
       if (err) return cb(err)
       loop(arr.pop(), arr)
@@ -144,7 +145,7 @@ function Iterator (db, options) {
 
   let enc = options.valueEncoding
   ;['lt', 'lte', 'gt', 'gte'].map((v) => {
-    var opt = options[v]
+    let opt = options[v]
     if (opt) options[v] = path.basename(opt, '.' + enc)
   })
 
@@ -160,7 +161,7 @@ Iterator.prototype._next = function Next (cb) {
   if (!key) return cb(null)
 
   let enc = this._options.valueEncoding
-  var k = path.basename(key, '.' + enc)
+  let k = path.basename(key, '.' + enc)
 
   if (this._done++ >= this._limit)
     return setImmediate(cb)
