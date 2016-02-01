@@ -1,6 +1,6 @@
 {
   "name": "level-fsdown",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "use the file system as a backing store for levelup",
   "main": "index.js",
   "scripts": {
@@ -8,6 +8,21 @@
   },
   "author": "0x00a",
   "license": "ISC",
+  "keywords": [
+    "leveldb",
+    "stream",
+    "fs",
+    "database",
+    "db",
+    "store",
+    "storage",
+    "json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/voltraco/level-fsdown.git"
+  },
+  "homepage": "https://github.com/voltraco/level-fsdown",
   "dependencies": {
     "abstract-leveldown": "^2.4.1",
     "mkdirp": "^0.5.1"
