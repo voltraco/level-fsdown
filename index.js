@@ -5,10 +5,13 @@ const path = require('path')
 const enc = require('./encoding')
 
 const mkdirp = require('mkdirp')
-const Ald = require('abstract-leveldown').AbstractLevelDOWN
+const AL = require('abstract-leveldown')
+const AbstractLevelDown = AL.AbstractLevelDOWN
+const AbstractIterator = AL.AbstractIterator
 
 function Fsdown (location) {
-  Ald.call(this, location)
+  AbstractLevelDown.call(this, location)
+
 }
 
 function nextdir (dir) {
@@ -40,11 +43,25 @@ cleandir.sync = function(dir, location) {
   cleandir.sync(nextdir(dir), location)
 }
 
-util.inherits(Fsdown, Ald)
+util.inherits(Fsdown, AbstractLevelDown)
 
 Fsdown.prototype._open = function Open (options, cb) {
-  
-  process.nextTick(() => cb(null, this))
+
+  let makeOpen = () => {
+    mkdirp(this.location, (err) => {
+      if (err) return cb(err)
+      cb(null, this)
+    })
+  }
+
+  if (options.createIfMissing) {
+    makeOpen()
+  } else if (options.errorIfExists) {
+    fs.stat(this.location, (err) => {
+      if (!err) return cb(new Error('Exists'))
+      makeOpen()
+    })
+  }
 }
 
 Fsdown.prototype._put = function Put (key, value, options, cb) {
@@ -110,6 +127,43 @@ Fsdown.prototype._batch = function Batch (arr, options, cb) {
   }
 
   loop(arr.pop(), arr)
+}
+
+function Iterator (db, options) {
+  AbstractIterator.call(this, db)
+  this._limit = options.limit
+
+  if (this._limit === -1)
+    this._limit = Infinity
+
+  this._list = fs.readdirSync(db.location)
+    .map((v) => path.join(db.location, v))
+
+  this._reverse = options.reverse
+  this._options = options
+  this._done = 0
+
+}
+
+util.inherits(Iterator, AbstractIterator)
+
+Iterator.prototype._next = function Next (cb) {
+  let key = this._list[this._reverse ? 'pop' : 'shift']()
+  var k = path.basename(key, '.' + this._options.valueEncoding)
+
+  if (this._done++ >= this._limit)
+    return setImmediate(cb)
+
+  if (!key) return cb(null)
+
+  fs.readFile(key, (err, val) => {
+    if (err) return cb(err)
+    cb(null, k, val)
+  })
+}
+
+Fsdown.prototype._iterator = function (options) {
+  return new Iterator(this, options)
 }
 
 module.exports = function (location) { 

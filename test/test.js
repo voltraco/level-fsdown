@@ -4,12 +4,15 @@ const levelup = require('levelup')
 const Fsdb = require('../index')
 const encoding = require('../encoding')
 const test = require('tape')
+const rimraf = require('rimraf')
 
 let db
 
 test('create instance', assert => {
 
-  db = levelup(__dirname, {
+  rimraf.sync(__dirname + '/db')
+
+  db = levelup(__dirname + '/db', {
     db: Fsdb,
     keyEncoding: encoding,
     valueEncoding: 'json'
@@ -156,6 +159,43 @@ test('batch', assert => {
             assert.end()
           })
       })
+    })
+
+  })
+})
+
+test('createReadStream', assert => {
+
+  let key1 = ['a']
+  let key2 = ['b']
+  let key3 = ['c']
+  let key4 = ['d']
+  let key5 = ['e']
+  let key6 = ['f']
+  let key7 = ['g']
+  let key8 = ['h']
+
+  db.batch([
+    { type: 'put', key: key1, value: {} },
+    { type: 'put', key: key2, value: {} },
+    { type: 'put', key: key3, value: {} },
+    { type: 'put', key: key4, value: {} },
+    { type: 'put', key: key5, value: {} },
+    { type: 'put', key: key6, value: {} },
+    { type: 'put', key: key7, value: {} },
+    { type: 'put', key: key8, value: {} }
+  ], (err) => {
+    assert.ok(!err)
+
+    let readcount = 0
+    let s = db.createReadStream()
+
+    s.on('data', (data) => {
+      ++readcount
+    })
+    s.on('end', () => {
+      assert.equal(readcount, 8)
+      assert.end()
     })
 
   })

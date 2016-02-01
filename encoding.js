@@ -10,10 +10,7 @@ exports.encode = function (source) {
 }
 
 exports.decode = function (source) {
-  var p = path.parse(source)
-  var key = p.split(path.sep)
-  key.push(p.name)
-  return key
+  return source.split(path.sep)
 }
 
 exports.buffer = false;
