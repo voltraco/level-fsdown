@@ -2,16 +2,16 @@
 const util = require('util')
 const fs = require('fs')
 const path = require('path')
-const enc = require('./encoding')
 
 const mkdirp = require('mkdirp')
 const AL = require('abstract-leveldown')
 const AbstractLevelDown = AL.AbstractLevelDOWN
 const AbstractIterator = AL.AbstractIterator
 
+const encoding = require('./encoding')
+
 function Fsdown (location) {
   AbstractLevelDown.call(this, location)
-
 }
 
 function nextdir (dir) {
@@ -46,6 +46,8 @@ cleandir.sync = function(dir, location) {
 util.inherits(Fsdown, AbstractLevelDown)
 
 Fsdown.prototype._open = function Open (options, cb) {
+
+  options.keyEncoding = encoding
 
   let makeOpen = () => {
     mkdirp(this.location, (err) => {
@@ -142,7 +144,6 @@ function Iterator (db, options) {
   this._reverse = options.reverse
   this._options = options
   this._done = 0
-
 }
 
 util.inherits(Iterator, AbstractIterator)
@@ -160,6 +161,11 @@ Iterator.prototype._next = function Next (cb) {
     if (err) return cb(err)
     cb(null, k, val)
   })
+}
+
+Iterator.prototype._end = function End (cb) {
+  this._list.length = 0
+  cb(null)
 }
 
 Fsdown.prototype._iterator = function (options) {

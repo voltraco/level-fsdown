@@ -2,7 +2,6 @@
 
 const levelup = require('levelup')
 const Fsdb = require('../index')
-const encoding = require('../encoding')
 const test = require('tape')
 const rimraf = require('rimraf')
 
@@ -14,7 +13,6 @@ test('create instance', assert => {
 
   db = levelup(__dirname + '/db', {
     db: Fsdb,
-    keyEncoding: encoding,
     valueEncoding: 'json'
   })
 
@@ -176,14 +174,14 @@ test('createReadStream', assert => {
   let key8 = ['h']
 
   db.batch([
-    { type: 'put', key: key1, value: {} },
-    { type: 'put', key: key2, value: {} },
-    { type: 'put', key: key3, value: {} },
-    { type: 'put', key: key4, value: {} },
-    { type: 'put', key: key5, value: {} },
-    { type: 'put', key: key6, value: {} },
-    { type: 'put', key: key7, value: {} },
-    { type: 'put', key: key8, value: {} }
+    { type: 'put', key: key1, value: { num: 1 } },
+    { type: 'put', key: key2, value: { num: 2 } },
+    { type: 'put', key: key3, value: { num: 3 } },
+    { type: 'put', key: key4, value: { num: 4 } },
+    { type: 'put', key: key5, value: { num: 5 } },
+    { type: 'put', key: key6, value: { num: 6 } },
+    { type: 'put', key: key7, value: { num: 7 } },
+    { type: 'put', key: key8, value: { num: 8 } }
   ], (err) => {
     assert.ok(!err)
 
@@ -192,6 +190,7 @@ test('createReadStream', assert => {
 
     s.on('data', (data) => {
       ++readcount
+      assert.equal(data.value.num, readcount)
     })
     s.on('end', () => {
       assert.equal(readcount, 8)

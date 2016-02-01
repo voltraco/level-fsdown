@@ -5,11 +5,9 @@ module to use the file system as a backing store.
 # USAGE
 ```js
 const Fsdown = require('level-fsdown')
-const encoding = require('level-fsdown/encoding')
 
 let db = levelup(__dirname, {
   db: Fsdown,
-  keyEncoding: encoding,
   valueEncoding: 'json'
 })
 
@@ -30,6 +28,8 @@ db.put(['foo', 'bar'], { hello: 'world' }, (err) => {
 When keys are provided as arrays, they are joined with the appropriate
 `path.sep` and then prefixed with the `location` as specified by the
 constructor.
+
+Supports `get`, `put`, `del`, `batch` and `createReadStream` methods.
 
 [0]:https://github.com/level/levelup
 [1]:https://github.com/level/leveldown
