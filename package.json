@@ -1,6 +1,6 @@
 {
   "name": "level-fsdown",
-  "version": "3.1.3",
+  "version": "3.2.3",
   "description": "use the file system as a backing store for levelup",
   "main": "index.js",
   "scripts": {

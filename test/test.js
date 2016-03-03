@@ -36,6 +36,21 @@ test('put and get (shallow no directory)', assert => {
   })
 })
 
+test('put bad segment', assert => {
+
+  let key = ['fo@o', '-', 'bar']
+
+  db.put(key, {}, (err) => {
+    db.get(['fo_o', '_', 'bar'], (err) => {
+      assert.ok(!err)
+      db.del(['fo_o', '_', 'bar'], (err) => {
+        assert.ok(!err)
+        assert.end()
+      })
+    })
+  })
+})
+
 test('put and get (shallow directory)', assert => {
 
   let expected = { bar: 'quxx', bazz: 100 }
