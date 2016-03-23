@@ -1,8 +1,13 @@
 'use strict'
 const path = require('path')
 const cleanRE = /\W+/g
+const extjson = '.json'
 
 let clean = seg => {
+  const extname = path.extname(seg);
+  if (extname === extjson) {
+    return seg.slice(0, -extjson.length).replace(cleanRE, '_');
+  }
   return seg.replace(cleanRE, '_')
 }
 
