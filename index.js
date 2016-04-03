@@ -168,7 +168,7 @@ Iterator.prototype._next = function Next (cb) {
 
   if (!ltgt.contains(this._options, k)) this._next(cb)
 
-  fs.readFile(key, (err, val) => {
+  fs.readFile(key, { encoding: 'utf8' }, (err, val) => {
     if (err) return cb(err)
     cb(null, k, val)
   })
