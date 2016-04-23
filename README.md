@@ -2,6 +2,8 @@
 A [`levelup`][0] compatible [`abstraction`][1] for node's [`fs`][2]
 module to use the file system as a backing store.
 
+Note that this is **NOT PERFORMANT**. File systems incur lots of syscalls, also, readdir(3) provides no gaurentees about ordering, so it requires a sort-stream. Basically, it shouldn't be used in *any* kind of hot path. It's sole purpose is to provide the common interface of levelup to storing and retriving items.
+
 # BUILDS/TESTS
 
 [![Build Status](https://travis-ci.org/voltraco/level-fsdown.png)](https://travis-ci.org/voltraco/level-fsdown)
